@@ -13,21 +13,81 @@ El dashboard de Tableau con los resultados visuales de este análisis está disp
 
 ## Descripción del Proyecto
 
-El proyecto analiza la relación entre las muertes por COVID-19 y la tasa de vacunación en diferentes países y regiones. A través de consultas SQL, el análisis incluye:
+Este análisis investiga la relación entre las muertes por COVID-19 y la tasa de vacunación en diferentes países y regiones. A través de consultas SQL, el análisis incluye:
 
-- **Cálculo del porcentaje de muertes por cada país**: Se calcula el porcentaje de muertes con respecto al total de casos.
-- **Análisis por país y por continente**: Comparación de tasas de mortalidad y casos por millón de habitantes.
-- **Tasa de vacunación**: Cálculo de la tasa de vacunación acumulada y el porcentaje de la población vacunada.
-- **Exportación de datos procesados**: Los resultados del análisis se exportan en formato CSV para su posterior análisis o visualización.
+- **Cálculo del porcentaje de muertes por cada país**: Determinamos el porcentaje de muertes con respecto al total de casos de COVID-19 en cada país.
+- **Análisis por país y por continente**: Comparamos tasas de mortalidad y casos por millón de habitantes entre países y continentes.
+- **Tasa de vacunación**: Calculamos la tasa de vacunación acumulada y el porcentaje de la población vacunada.
+- **Exportación de datos procesados**: Los resultados del análisis se exportan en formato CSV para su posterior análisis y visualización.
+
 
 ## Resultados
 
-Los resultados del análisis incluyen:
+### 1. **Países con el porcentaje de muertes más alto (2020-2021)**:
+Durante el periodo entre abril de 2020 y junio de 2021, los países con el porcentaje más alto de muertes en relación con los casos confirmados fueron:
 
-- Comparación de la mortalidad por COVID-19 entre países.
-- Identificación de los países con mayores tasas de vacunación.
-- Análisis de la correlación entre la tasa de mortalidad y la tasa de vacunación.
-- Exportación de los resultados procesados a un archivo CSV.
+| País                | Porcentaje de muertes |
+|---------------------|-----------------------|
+| United Kingdom       | 23.00%                |
+| Mexico              | 17.00%                |
+| Italy               | 15.00%                |
+| Peru                | 14.00%                |
+| Brazil              | 7.00%                 |
+| China               | 6.00%                 |
+| United States       | 6.00%                 |
+| Germany             | 5.00%                 |
+| India               | 3.00%                 |
+| New Zealand         | 2.00%                 |
+
+### 2. **Países con la mayor tasa de infección por población**:
+La tasa de infección más alta por población durante el periodo mencionado es la siguiente:
+
+| País                | Tasa de infección (%) |
+|---------------------|-----------------------|
+| United States       | 10.00%                |
+| Brazil              | 9.00%                 |
+| United Kingdom      | 7.00%                 |
+| Italy               | 7.00%                 |
+| Peru                | 6.00%                 |
+| Germany             | 4.00%                 |
+| Mexico              | 2.00%                 |
+| India               | 2.00%                 |
+| China               | 0.00%                 |
+
+### 3. **Países con la cantidad de muertes más alta por población**:
+Los países con la mayor cantidad de muertes por población son:
+
+| País                | Muertes Totales |
+|---------------------|-----------------|
+| United States       | 1,193,165       |
+| Brazil              | 702,116         |
+| India               | 533,623         |
+| Russia              | 403,188         |
+| Mexico              | 334,551         |
+| United Kingdom      | 232,112         |
+| Peru                | 220,975         |
+| Italy               | 197,307         |
+| Germany             | 174,979         |
+| France              | 168,091         |
+
+### 4. **Mortalidad por continente**:
+La mortalidad más alta por continente se distribuye de la siguiente forma:
+
+| Continente          | Muertes Totales |
+|---------------------|-----------------|
+| North America       | 1,193,165       |
+| South America       | 702,116         |
+| Asia                | 533,623         |
+| Europe              | 403,188         |
+| Africa              | 102,595         |
+| Oceania             | 25,236          |
+
+### 5. **Números Globales**:
+Hasta junio de 2024, a nivel global:
+
+- **Total de nuevos casos**: 775,888,147
+- **Total de nuevas muertes**: 6,990,824
+- **Porcentaje de nuevas muertes**: 0.90%
 
 ## Tecnologías Utilizadas
 
@@ -62,26 +122,27 @@ Contiene los datos sobre las vacunaciones contra el COVID-19:
 - Y otras métricas relacionadas con la vacunación y las pruebas.
 
 ## Dashboard Tableau
-### 1. Visión general
-* Los números globales para 2020
-Número de Casos y Muertes: Con un total de 30,438 millones de casos, 983 millones de muertes y una tasa de mortalidad de 3,2%.
-Número de Casos y Muertes: Con un total de 712,804 millones de casos, 6386 millones de muertes y una tasa de mortalidad de 0.9%.
 
-### 2. Distribución Acumulada de Vacunas:
-* La visualización de la distribución acumulada de dosis de vacunas muestra claramente los países que lideran en vacunación (China, India, y Estados Unidos). Este gráfico es útil para comparar la cantidad de vacunas administradas en los países más afectados.
+### 1. **Visión General**
+* **Números globales**: En 2020, el mundo reportó un total de 30.4 millones de casos y 983 millones de muertes, con una tasa de mortalidad global de 3.2%. Para 2024, los casos alcanzaron los 712.8 millones, con 6.39 millones de muertes y una tasa de mortalidad de 0.9%.
 
-### 3. Mapa Interactivo:
-El mapa muestra las tasas de mortalidad por país, destacando las tasas más altas en Brasil, Perú y Estados Unidos. Esto hace fácil visualizar cómo varían las tasas de mortalidad entre las diferentes regiones del mundo.
+### 2. **Distribución Acumulada de Vacunas**:
+* La visualización muestra a los países con la mayor cantidad de vacunas administradas, como China, India, y Estados Unidos, permitiendo comparar el progreso en la vacunación.
 
-### 4. Interactividad:
-El filtro para cambiar entre años (2020) permite interactuar con la visualización y ajustar el análisis según diferentes periodos. Esto es útil para observar cómo cambian los datos a lo largo del tiempo.
+### 3. **Mapa Interactivo**:
+El mapa interactivo muestra las tasas de mortalidad por país, destacando Brasil, Perú y Estados Unidos como los países con las tasas más altas.
+
+### 4. **Interactividad**:
+Los filtros permiten cambiar entre los diferentes años de análisis (2020-2024) para observar cómo ha evolucionado la pandemia a lo largo del tiempo.
 
 ## Instrucciones para Ejecutar el Proyecto
 
 1. Clona este repositorio:
    git clone https://github.com/tu_usuario/Analisis-Covid-19.git
-2. Asegúrate de tener PostgreSQL instalado y crear una base de datos para importar los datos.
-3. Ejecuta los scripts SQL para cargar y analizar los datos.
+2. Instalar PostgreSQL: Asegúrate de tener PostgreSQL instalado y configurado correctamente.
+3. Crear la base de datos: Crea una base de datos y asegúrate de tener los permisos necesarios para importar los archivos CSV.
+4. Ejecutar los scripts SQL: Ejecuta los scripts SQL para cargar y analizar los datos en tu base de datos PostgreSQL.
+5. Cargar los archivos CSV: Utiliza el comando COPY para importar los archivos CSV de datos de muertes y vacunación en las tablas correspondientes.
    
 ### Contribuciones
 
