@@ -1,4 +1,4 @@
--- "Análisis de Mortalidad y Vacunación Global por COVID-19 (2020-2024)"
+-- "ANÁLISIS DE MORTALIDAD Y VACUNACIÓN GLOBAL POR COVID-19(2020-2024)"
 
 -- ELIMINAMOS LA TABLA SI EXISTE
 -- Esta instrucción elimina cualquier tabla existente con el nombre 'covid_deaths' antes de crearla.
