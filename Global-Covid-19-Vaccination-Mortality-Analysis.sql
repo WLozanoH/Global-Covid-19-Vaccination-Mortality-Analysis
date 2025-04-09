@@ -1,113 +1,41 @@
 -- "ANÁLISIS DE MORTALIDAD Y VACUNACIÓN GLOBAL POR COVID-19(2020-2024)"
 
--- ELIMINAMOS LA TABLA SI EXISTE
--- Esta instrucción elimina cualquier tabla existente con el nombre 'covid_deaths' antes de crearla.
-DROP TABLE IF EXISTS covid_deaths;
+-- Crear las tablas en python y luego pasarlas a SQL para realizar el análisis
+'''
+### Importar las librerías necesarias
+import pandas as pd 
+from sqlalchemy import create_engine 
 
--- CREACIÓN DE LA TABLA 'covid_deaths'
--- Creamos una tabla para almacenar la información de las muertes por COVID-19 en diferentes países y continentes.
-CREATE TABLE covid_deaths (
-    iso_code VARCHAR(10),	-- Código ISO del país
-    continent VARCHAR(50),	-- Continente
-    location VARCHAR(100),	-- Nombre del país o región
-    date DATE,	-- Fecha de la medición
-    population BIGINT,	-- Población del país
-    total_cases INT,	-- Total de casos de COVID-19
-    new_cases INT,	-- Nuevos casos reportados
-    new_cases_smoothed FLOAT,	-- Nuevos casos suavizados
-    total_deaths INT,	-- Total de muertes por COVID-19
-    new_deaths INT,	-- Nuevas muertes reportadas
-    new_deaths_smoothed FLOAT,	-- Nuevas muertes suavizadas
-    total_cases_per_million FLOAT,	-- Total de casos por millón de habitantes
-    new_cases_per_million FLOAT,	-- Nuevos casos por millón de habitantes
-    new_cases_smoothed_per_million FLOAT,	-- Nuevos casos suavizados por millón
-    total_deaths_per_million FLOAT,	-- Total de muertes por millón de habitantes
-    new_deaths_per_million FLOAT,	-- Nuevas muertes por millón de habitantes
-    new_deaths_smoothed_per_million FLOAT,	-- Nuevas muertes suavizadas por millón
-    reproduction_rate FLOAT,	-- Tasa de reproducción del virus
-    icu_patients INT,	-- Número de pacientes en cuidados intensivos
-    icu_patients_per_million FLOAT,	-- Pacientes en cuidados intensivos por millón
-    hosp_patients INT,	-- Número de pacientes hospitalizados
-    hosp_patients_per_million FLOAT,	-- Pacientes hospitalizados por millón
-    weekly_icu_admissions INT,	-- Ingresos semanales en unidades de cuidados intensivos
-    weekly_icu_admissions_per_million FLOAT,	-- Ingresos semanales por millón en unidades de cuidados intensivos
-    weekly_hosp_admissions INT,	-- Ingresos semanales hospitalarios
-    weekly_hosp_admissions_per_million FLOAT	-- Ingresos semanales hospitalarios por millón
-);
+### Cargar los datos de la tabla "covid_deaths":
+covid_deaths = pd.read_csv('CovidDeaths.csv', sep=';', parse_dates=['date'], dayfirst=True)
 
-	
--- CARGA DE DATOS EN LA TABLA 'covid_deaths'
--- Usamos el comando COPY para importar los datos desde un archivo CSV.
-COPY covid_deaths FROM 'C:\Users\LENOVO\Desktop\Projects\Covid-19\CovidDeaths.csv' -- Ruta donde se encuentra el archivo CSV
-DELIMITER ';'	-- El delimitador usado en el archivo CSV es el punto y coma
-HEADER CSV;	-- El archivo CSV tiene una fila de encabezado
+### Cargar los datos de la tabla "covid_vaccinations"
+covid_vaccinations = pd.read_csv('CovidVaccinations.csv', sep=';', parse_dates=['date'])
+
+###Convertir los datos a tablas en SQL usando la librería "sqlalchemy"
+
+# Parámetros de conexión (reemplázalos por tus datos de conexión)
+usuario = 'postgres'
+contraseña = 'Coloca tu contraseña'
+base_de_datos = 'Coloca el nombre de tu base de datos donde cargarás tus archivos'
+host = 'localhost' #Servidor de PostgreSQL
+puerto = '5432' # Puerto por defecto de PostgreSQL
+
+# Crear el engine de SQLAlchemy para la conexión con postgreSQL
+engine = create_engine(f'postgresql://{usuario}:{contraseña}@{host}:{puerto}/base_de_datos')
+
+#Cargar los datos en la base de datos
+covid_deaths.to_sql('covid_deaths', conn=engine, if_exists='replace', index = False)
+covid_vaccinations.to_sql('covid_vaccinations', con=engine, if_exists='replace',index=False)
+'''
+
 
 -- VERIFICACIÓN DE LOS DATOS CARGADOS EN 'covid_deaths'
 -- Hacemos una consulta para ver los primeros registros de la tabla y verificar que la importación fue exitosa.
 SELECT * FROM covid_deaths;
 
--- ELIMINAMOS LA TABLA 'covid_vaccinations' SI EXISTE
-DROP TABLE IF EXISTS covid_vaccinations;
-
--- CREACIÓN DE LA TABLA 'covid_vaccinations'
--- Creamos una tabla para almacenar los datos de vacunación contra el COVID-19 a nivel mundial.
-CREATE TABLE covid_vaccinations (
-    iso_code VARCHAR(10),	-- Código ISO del país
-    continent VARCHAR(50),	-- Continente
-    location VARCHAR(100),	-- País o región
-    date DATE,	-- Fecha de la medición
-    total_tests BIGINT,	-- Total de pruebas realizadas
-    new_tests BIGINT, -- Nuevas pruebas realizadas
-    total_tests_per_thousand FLOAT, -- Total de pruebas por mil habitantes
-    new_tests_per_thousand FLOAT, -- Nuevas pruebas por mil habitantes
-    new_tests_smoothed FLOAT, -- Nuevas pruebas suavizadas
-    new_tests_smoothed_per_thousand FLOAT, -- Nuevas pruebas suavizadas por mil habitantes
-    positive_rate FLOAT,	-- Tasa de resultados positivos
-    tests_per_case FLOAT,	-- Número de pruebas por caso
-    tests_units VARCHAR(50),	-- Unidades de prueba
-    total_vaccinations BIGINT,	-- Total de vacunas administradas
-    people_vaccinated BIGINT,	-- Personas vacunadas al menos una vez
-    people_fully_vaccinated BIGINT,	-- Personas completamente vacunadas
-    total_boosters BIGINT,	-- Total de dosis de refuerzo administradas
-    new_vaccinations BIGINT,	-- Nuevas vacunas administradas
-    new_vaccinations_smoothed BIGINT,	-- Nuevas vacunas suavizadas
-    total_vaccinations_per_hundred FLOAT,	-- Total de vacunas por cada 100 habitantes
-    people_vaccinated_per_hundred FLOAT,	-- Personas vacunadas por cada 100 habitantes
-    people_fully_vaccinated_per_hundred FLOAT,	-- Personas completamente vacunadas por cada 100 habitantes
-    total_boosters_per_hundred FLOAT,	-- Dosis de refuerzo por cada 100 habitantes
-    new_vaccinations_smoothed_per_million FLOAT,	-- Nuevas vacunas suavizadas por millón de habitantes
-    new_people_vaccinated_smoothed BIGINT,	-- Nuevas personas vacunadas suavizadas
-    new_people_vaccinated_smoothed_per_hundred FLOAT,	-- Nuevas personas vacunadas por cada 100 habitantes
-    stringency_index FLOAT,	-- Índice de severidad de las medidas de control
-    population_density FLOAT,	-- Densidad poblacional
-    median_age FLOAT,	-- Edad media de la población
-    aged_65_older FLOAT,	-- Porcentaje de personas mayores de 65 años
-    aged_70_older FLOAT,	-- Porcentaje de personas mayores de 70 años
-    gdp_per_capita FLOAT,	-- Producto interno bruto per cápita
-    extreme_poverty FLOAT,	-- Porcentaje de población en extrema pobreza
-    cardiovasc_death_rate FLOAT,	-- Tasa de muertes por enfermedades cardiovasculares
-    diabetes_prevalence FLOAT,	-- Prevalencia de diabetes
-    female_smokers FLOAT,	-- Porcentaje de mujeres fumadoras
-    male_smokers FLOAT,	-- Porcentaje de hombres fumadores
-    handwashing_facilities FLOAT,	-- Porcentaje de población con acceso a instalaciones para lavarse las manos
-    hospital_beds_per_thousand FLOAT,	-- Número de camas hospitalarias por mil habitantes
-    life_expectancy FLOAT,	-- Esperanza de vida
-    human_development_index FLOAT,	-- Índice de desarrollo humano
-    excess_mortality_cumulative_absolute FLOAT,	-- Mortalidad excedente acumulada absoluta
-    excess_mortality_cumulative FLOAT,	-- Mortalidad excedente acumulada
-    excess_mortality FLOAT,	-- Mortalidad excedente
-    excess_mortality_cumulative_per_million FLOAT	-- Mortalidad excedente acumulada por millón de habitantes
-);
-
--- CARGA DE DATOS EN LA TABLA 'covid_vaccinations'
-COPY covid_vaccinations FROM 'C:\Users\LENOVO\Desktop\Projects\Covid-19\CovidVaccinations.csv' --ruta de donde se extraerá los datos a importar
-DELIMITER ';'	-- Delimitador en el archivo CSV
-HEADER CSV;		-- El archivo tiene una fila de encabezado
-
 -- VERIFICACIÓN DE LOS DATOS CARGADOS EN 'covid_vaccinations'
-SELECT
-	*
-FROM covid_vaccinations;
+SELECT * FROM covid_vaccinations;
 
 ----PORTFOLIO PROJECT - SQL DATA EXPLORATION
 -- CREATE TABLE 'CovidVaccinations'
@@ -383,3 +311,79 @@ DROP TABLE IF EXISTS PercentagePopulationVaccinated;
 --Link de dashboard en Tableau: 👉VISUALIZACIÓN DE DATOS: https://public.tableau.com/app/profile/wilmer.lozano/viz/Global-Covid-19-Vaccination-Mortality-Analysis2020-2024/Dashboard1?publish=yes
 
 --that's it
+
+'''
+GLOSARIO: 'covid_deaths'
+
+iso_code: Código ISO del país
+continent: Continente
+location: Nombre del país o región
+date: Fecha de la medición
+population: Población del país
+total_cases: Total de casos de COVID-19
+new_cases: Nuevos casos reportados
+new_cases_smoothed: Nuevos casos suavizados
+total_deaths: Total de muertes por COVID-19
+new_deaths: Nuevas muertes reportadas
+new_deaths_smoothed: Nuevas muertes suavizadas
+total_cases_per_million: Total de casos por millón de habitantes
+new_cases_per_million: Nuevos casos por millón de habitantes
+new_cases_smoothed_per_million: Nuevos casos suavizados por millón
+total_deaths_per_million: Total de muertes por millón de habitantes
+new_deaths_per_million: Nuevas muertes por millón de habitantes
+new_deaths_smoothed_per_million: Nuevas muertes suavizadas por millón
+reproduction_rate: Tasa de reproducción del virus
+icu_patients: Número de pacientes en cuidados intensivos
+icu_patients_per_million: Pacientes en cuidados intensivos por millón
+hosp_patients: Número de pacientes hospitalizados
+hosp_patients_per_million:Pacientes hospitalizados por millón
+weekly_icu_admissions: Ingresos semanales en unidades de cuidados intensivos
+weekly_icu_admissions_per_million: Ingresos semanales por millón en unidades de cuidados intensivos
+weekly_hosp_admissions: Ingresos semanales hospitalarios
+weekly_hosp_admissions_per_million: Ingresos semanales hospitalarios por millón
+
+
+GLOSARIO: 'covid_vaccinations'
+
+total_tests: Total de pruebas realizadas.
+new_tests: Nuevas pruebas realizadas.
+total_tests_per_thousand: Total de pruebas por mil habitantes.
+new_tests_per_thousand: Nuevas pruebas por mil habitantes.
+new_tests_smoothed: Nuevas pruebas suavizadas.
+new_tests_smoothed_per_thousand: Nuevas pruebas suavizadas por mil habitantes.
+positive_rate: Tasa de resultados positivos.
+tests_per_case: Número de pruebas por caso.
+tests_units: Unidades de prueba.
+total_vaccinations: Total de vacunas administradas.
+people_vaccinated: Personas vacunadas al menos una vez.
+people_fully_vaccinated: Personas completamente vacunadas.
+total_boosters: Total de dosis de refuerzo administradas.
+new_vaccinations: Nuevas vacunas administradas.
+new_vaccinations_smoothed: Nuevas vacunas suavizadas.
+total_vaccinations_per_hundred: Total de vacunas por cada 100 habitantes.
+people_vaccinated_per_hundred: Personas vacunadas por cada 100 habitantes.
+people_fully_vaccinated_per_hundred: Personas completamente vacunadas por cada 100 habitantes.
+total_boosters_per_hundred: Dosis de refuerzo por cada 100 habitantes.
+new_vaccinations_smoothed_per_million: Nuevas vacunas suavizadas por millón de habitantes.
+new_people_vaccinated_smoothed: Nuevas personas vacunadas suavizadas.
+new_people_vaccinated_smoothed_per_hundred: Nuevas personas vacunadas por cada 100 habitantes.
+stringency_index: Índice de severidad de las medidas de control.
+population_density: Densidad poblacional.
+median_age: Edad media de la población.
+aged_65_older: Porcentaje de personas mayores de 65 años.
+aged_70_older: Porcentaje de personas mayores de 70 años.
+gdp_per_capita: Producto interno bruto per cápita.
+extreme_poverty: Porcentaje de población en extrema pobreza.
+cardiovasc_death_rate: Tasa de muertes por enfermedades cardiovasculares.
+diabetes_prevalence: Prevalencia de diabetes.
+female_smokers: Porcentaje de mujeres fumadoras.
+male_smokers: Porcentaje de hombres fumadores.
+handwashing_facilities: Porcentaje de población con acceso a instalaciones para lavarse las manos.
+hospital_beds_per_thousand: Número de camas hospitalarias por mil habitantes.
+life_expectancy: Esperanza de vida.
+human_development_index: Índice de desarrollo humano.
+excess_mortality_cumulative_absolute: Mortalidad excedente acumulada absoluta.
+excess_mortality_cumulative: Mortalidad excedente acumulada.
+excess_mortality: Mortalidad excedente.
+excess_mortality_cumulative_per_million: Mortalidad excedente acumulada por millón de habitantes.
+'''
